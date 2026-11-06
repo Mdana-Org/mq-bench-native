@@ -1,0 +1,13 @@
+name: ci
+on:
+  pull_request:
+  merge_group:
+jobs:
+  ci:
+    runs-on: ubuntu-latest
+    steps:
+      - run: sleep 10
+      - name: fail if any commit says [fail]
+        run: |
+          if [ "${{ github.event_name }}" = "merge_group" ]; then MSG="${{ github.event.merge_group.head_commit.message }}"; else MSG="${{ github.event.pull_request.title }}"; fi
+          case "$MSG" in *"[fail]"*) echo "forced failure"; exit 1;; esac
